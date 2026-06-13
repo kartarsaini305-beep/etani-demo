@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ètani Cafè — Good Vibes, Great Coffee</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Tenor+Sans&family=Cormorant:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════
+   DESIGN TOKENS
+══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* Palette — deep espresso + aged gold + warm parchment */
+  --ink:    #0F0709;
+  --deep:   #1A0C12;
+  --wine:   #3D1422;
+  --plum:   #622038;
+  --gold:   #B8862C;
+  --amber:  #CEA24A;
+  --sand:   #D4B882;
+  --cream:  #F0E6CE;
+  --ivory:  #FAF6EE;
+  --warm:   #EDE0C4;
+  --muted:  #7D5462;
+
+  /* Navbar — slate-dark, distinct from the rest */
+  --nav-bg: #16222A;
+  --nav-border: rgba(176,140,80,0.14);
+
+  /* Typography */
+  --serif:   'Libre Baskerville', Georgia, serif;
+  --display: 'Cormorant', Georgia, serif;
+  --body:    'Tenor Sans', system-ui, sans-serif;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--body);
+  background: var(--ivory);
+  color: var(--ink);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+a { text-decoration: none; color: inherit; }
+img { display: block; width: 100%; }
+
+/* ══════════════════════════════════════════════
+   SCROLLBAR
+══════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: var(--amber); }
+
+/* cursor: default browser */
+
+/* ══════════════════════════════════════════════
+   REVEAL — only forward, no re-animation on scroll up
+══════════════════════════════════════════════ */
+[data-r] {
+  opacity: 0;
+  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+}
+[data-r="y"] { transform: translateY(44px); }
+[data-r="l"] { transform: translateX(-44px); }
+[data-r="r"] { transform: translateX(44px); }
+[data-r="s"] { transform: scale(0.94); }
+[data-r].in  { opacity: 1; transform: none; }
+
+[data-d="1"] { transition-delay: 0.07s; }
+[data-d="2"] { transition-delay: 0.14s; }
+[data-d="3"] { transition-delay: 0.21s; }
+[data-d="4"] { transition-delay: 0.28s; }
+[data-d="5"] { transition-delay: 0.35s; }
+[data-d="6"] { transition-delay: 0.42s; }
+
+/* ══════════════════════════════════════════════
+   EYEBROW LABEL
+══════════════════════════════════════════════ */
+.lbl {
+  display: inline-flex; align-items: center; gap: 13px;
+  font-family: var(--body); font-size: 0.62rem;
+  letter-spacing: 0.3em; text-transform: uppercase; font-weight: 400;
+}
+.lbl::before, .lbl::after {
+  content: ''; display: block; width: 24px; height: 1px; flex-shrink: 0;
+}
+.lbl-gold { color: var(--amber); }
+.lbl-gold::before, .lbl-gold::after { background: var(--amber); }
+.lbl-dark { color: var(--plum); }
+.lbl-dark::before, .lbl-dark::after { background: var(--plum); }
+.lbl-c { justify-content: center; }
+
+/* ══════════════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════════════ */
+.btn-a {
+  display: inline-block;
+  padding: 15px 44px;
+  background: var(--amber); color: var(--ink);
+  font-family: var(--body); font-size: 0.68rem;
+  font-weight: 400; letter-spacing: 0.22em; text-transform: uppercase;
+  position: relative; overflow: hidden;
+  transition: transform 0.3s var(--ease), box-shadow 0.3s;
+}
+.btn-a::before {
+  content: ''; position: absolute; inset: 0;
+  background: rgba(255,255,255,0.2);
+  transform: translateX(-110%) skewX(-18deg);
+  transition: transform 0.55s var(--ease);
+}
+.btn-a:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(176,130,44,0.32); }
+.btn-a:hover::before { transform: translateX(110%) skewX(-18deg); }
+
+.btn-b {
+  display: inline-block;
+  padding: 15px 44px;
+  background: transparent; color: var(--cream);
+  border: 1px solid rgba(240,230,206,0.28);
+  font-family: var(--body); font-size: 0.68rem;
+  font-weight: 400; letter-spacing: 0.22em; text-transform: uppercase;
+  transition: border-color 0.3s, background 0.3s;
+}
+.btn-b:hover { border-color: rgba(240,230,206,0.65); background: rgba(240,230,206,0.06); }
+
+/* ══════════════════════════════════════════════
+   NAVBAR  — slate-teal, visually distinct
+══════════════════════════════════════════════ */
+#nav {
+  position: fixed; inset: 0 0 auto 0; z-index: 500;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 64px; height: 74px;
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--nav-border);
+  transition: height 0.4s var(--ease), box-shadow 0.4s;
+}
+#nav.compact {
+  height: 60px;
+  box-shadow: 0 2px 24px rgba(0,0,0,0.35);
+}
+
+.nav-logo {
+  font-family: var(--display);
+  font-size: 1.48rem; font-weight: 600; font-style: italic;
+  color: var(--cream); letter-spacing: 0.02em;
+  transition: color 0.2s;
+}
+.nav-logo span { color: var(--amber); }
+.nav-logo:hover { color: var(--amber); }
+
+.nav-center {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 42px; list-style: none;
+}
+.nav-center a {
+  font-family: var(--body); font-size: 0.68rem;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(240,230,206,0.5); font-weight: 400;
+  transition: color 0.25s;
+  position: relative; padding-bottom: 4px;
+}
+.nav-center a::after {
+  content: ''; position: absolute; bottom: 0; left: 0;
+  width: 0; height: 1px; background: var(--amber);
+  transition: width 0.35s var(--ease);
+}
+.nav-center a:hover { color: var(--amber); }
+.nav-center a:hover::after { width: 100%; }
+
+.nav-right { display: flex; align-items: center; gap: 22px; }
+.nav-phone {
+  font-family: var(--body); font-size: 0.72rem;
+  color: rgba(240,230,206,0.38); letter-spacing: 0.06em;
+}
+.nav-phone strong { color: var(--sand); font-weight: 400; }
+
+.nav-btn {
+  padding: 9px 24px;
+  border: 1px solid rgba(176,130,44,0.4);
+  color: var(--amber);
+  font-family: var(--body); font-size: 0.66rem;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  position: relative; overflow: hidden;
+  transition: color 0.3s, border-color 0.3s;
+}
+.nav-btn::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--amber); transform: scaleX(0);
+  transform-origin: left; transition: transform 0.35s var(--ease); z-index: -1;
+}
+.nav-btn:hover { color: var(--ink); border-color: var(--amber); }
+.nav-btn:hover::before { transform: scaleX(1); }
+
+/* ══════════════════════════════════════════════
+   HERO
+══════════════════════════════════════════════ */
+#hero {
+  min-height: 100vh; position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; background: var(--ink);
+}
+
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background: linear-gradient(150deg, #2a0e1c 0%, #0F0709 50%, #1a0c12 100%);
+  will-change: transform;
+}
+
+.hero-overlay {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    radial-gradient(ellipse 75% 65% at 50% 38%, rgba(61,20,34,0.6) 0%, transparent 68%),
+    linear-gradient(to bottom, rgba(15,7,9,0.25) 0%, transparent 38%, transparent 55%, rgba(15,7,9,0.96) 100%);
+}
+
+/* Film grain */
+.hero-grain {
+  position: absolute; inset: -50%; z-index: 2; pointer-events: none;
+  width: 200%; height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23g)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.45; animation: grain 7s steps(1) infinite;
+}
+@keyframes grain {
+  0%,100%{transform:translate(0,0)} 10%{transform:translate(-2%,-3%)} 20%{transform:translate(3%,1%)}
+  30%{transform:translate(-1%,4%)} 40%{transform:translate(4%,-2%)} 50%{transform:translate(-3%,3%)}
+  60%{transform:translate(2%,-4%)} 70%{transform:translate(-4%,2%)} 80%{transform:translate(3%,-1%)} 90%{transform:translate(-2%,4%)}
+}
+
+/* Ambient orbs */
+.orb { position: absolute; border-radius: 50%; filter: blur(110px); pointer-events: none; z-index: 1; animation: orb-f 11s ease-in-out infinite alternate; }
+.o1 { width:580px; height:580px; background:rgba(61,20,34,0.45); top:-120px; right:-80px; animation-delay:0s; }
+.o2 { width:380px; height:380px; background:rgba(176,130,44,0.1); bottom:0; left:-60px; animation-delay:4s; }
+.o3 { width:260px; height:260px; background:rgba(61,20,34,0.35); top:45%; left:32%; animation-delay:7s; }
+@keyframes orb-f { from{transform:translate(0,0) scale(1)} to{transform:translate(28px,-22px) scale(1.05)} }
+
+.hero-inner {
+  position: relative; z-index: 3;
+  padding: 0 28px; max-width: 940px;
+}
+
+.hero-lbl {
+  color: var(--amber); margin-bottom: 32px;
+  animation: h-up 0.9s 0.35s both;
+}
+.hero-lbl::before, .hero-lbl::after { background: var(--amber); }
+@keyframes h-up { from{opacity:0;transform:translateY(26px)} to{opacity:1;transform:none} }
+
+.hero-h1 {
+  font-family: var(--display);
+  font-size: clamp(3.6rem, 8.5vw, 8rem);
+  font-weight: 300; line-height: 0.9;
+  color: var(--cream); letter-spacing: -0.01em;
+  animation: h-up 1s 0.52s both;
+}
+/* "Great Coffee" — italic display weight */
+.hero-h1 .cursive {
+  display: block;
+  font-style: italic; font-weight: 600;
+  color: var(--amber);
+  animation: h-up 1s 0.66s both;
+}
+/* "Budget-Friendly Bites" — lighter, smaller */
+.hero-h1 .sub-line {
+  display: block;
+  font-size: 0.52em; font-weight: 300; font-style: normal;
+  color: rgba(240,230,206,0.55);
+  letter-spacing: 0.04em;
+  margin-top: 10px;
+  animation: h-up 0.9s 0.80s both;
+}
+
+.hero-rule {
+  display: flex; align-items: center; justify-content: center; gap: 18px;
+  margin: 32px auto;
+  animation: h-up 0.8s 0.95s both;
+}
+.hero-rule-line { flex:1; max-width:72px; height:1px; background:rgba(206,162,74,0.28); }
+.hero-rule-diamond {
+  width: 6px; height: 6px;
+  background: var(--amber);
+  transform: rotate(45deg);
+}
+
+.hero-sub {
+  font-family: var(--display); font-style: italic; font-weight: 300;
+  font-size: clamp(1.05rem, 2vw, 1.32rem);
+  color: rgba(240,230,206,0.45); line-height: 1.8;
+  animation: h-up 0.8s 1.05s both;
+}
+
+.hero-btns {
+  display: flex; gap: 16px; margin-top: 52px;
+  justify-content: center; flex-wrap: wrap;
+  animation: h-up 0.8s 1.18s both;
+}
+
+
+/* Hero stat bar */
+.hero-bar {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 3;
+  display: grid; grid-template-columns: 1fr 1px 1fr 1px 1fr;
+  background: rgba(15,7,9,0.88); backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(176,130,44,0.16);
+  animation: h-up 0.9s 1.3s both;
+}
+.hb-div { background: rgba(176,130,44,0.16); }
+.hb-stat {
+  padding: 22px 0; text-align: center;
+  transition: background 0.25s;
+}
+.hb-stat:hover { background: rgba(176,130,44,0.05); }
+.hb-num {
+  font-family: var(--display); font-size: 2.1rem;
+  font-weight: 600; color: var(--amber); line-height: 1;
+}
+.hb-lbl {
+  font-size: 0.58rem; letter-spacing: 0.24em; text-transform: uppercase;
+  color: rgba(240,230,206,0.32); margin-top: 6px;
+}
+
+/* ══════════════════════════════════════════════
+   PILLARS BAND
+══════════════════════════════════════════════ */
+#band {
+  background: var(--wine); padding: 72px 64px;
+}
+.band-grid {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  max-width: 1160px; margin: 0 auto;
+}
+.band-item {
+  padding: 0 36px; text-align: center;
+  border-right: 1px solid rgba(240,230,206,0.07);
+  transition: transform 0.35s var(--ease);
+}
+.band-item:first-child { padding-left: 0; }
+.band-item:last-child  { border-right: none; padding-right: 0; }
+.band-item:hover { transform: translateY(-5px); }
+.band-ico {
+  width: 46px; height: 46px; margin: 0 auto 18px;
+  border: 1px solid rgba(176,130,44,0.3);
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.3s, border-color 0.3s;
+}
+.band-item:hover .band-ico { background: rgba(176,130,44,0.1); border-color: var(--amber); }
+.band-ico svg { width:19px; height:19px; stroke:var(--amber); fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
+.band-item h4 { font-family:var(--serif); font-size:0.98rem; font-weight:700; color:var(--cream); margin-bottom:9px; }
+.band-item p  { font-size:0.78rem; color:rgba(240,230,206,0.42); line-height:1.72; }
+
+/* ══════════════════════════════════════════════
+   ABOUT
+══════════════════════════════════════════════ */
+#about { background: var(--cream); padding: 130px 64px; }
+.about-wrap {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 96px; align-items: center;
+}
+.about-h2 {
+  font-family: var(--display);
+  font-size: clamp(2.1rem, 4vw, 3.5rem);
+  font-weight: 300; line-height: 1.1; color: var(--deep);
+  margin: 18px 0 28px;
+}
+.about-h2 em { font-style:italic; font-weight:600; color:var(--plum); }
+.about-p { font-size: 0.96rem; line-height: 1.94; color: #4e2c3a; margin-bottom: 18px; }
+
+.feats { display:grid; grid-template-columns:1fr 1fr; gap:2px; }
+.feat {
+  background: white; padding: 28px 22px;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.3s, transform 0.3s var(--ease), box-shadow 0.3s;
+}
+.feat:hover { border-bottom-color:var(--amber); transform:translateY(-4px); box-shadow:0 12px 36px rgba(15,7,9,0.1); }
+.feat-ico { margin-bottom:12px; }
+.feat-ico svg { width:19px; height:19px; stroke:var(--gold); fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
+.feat h4 { font-family:var(--serif); font-size:0.88rem; font-weight:700; color:var(--deep); margin-bottom:5px; }
+.feat p  { font-size:0.76rem; color:var(--muted); line-height:1.7; }
+
+/* ══════════════════════════════════════════════
+   MARQUEE STRIP
+══════════════════════════════════════════════ */
+#marquee { background:var(--deep); padding:48px 0; overflow:hidden; }
+.mq-track {
+  display:flex; width:max-content;
+  animation: mq 24s linear infinite;
+}
+@keyframes mq { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.mq-item {
+  display:flex; align-items:center; gap:28px;
+  padding:0 28px; white-space:nowrap;
+}
+.mq-text {
+  font-family: var(--display); font-style:italic; font-weight:300;
+  font-size: clamp(1.15rem, 2.4vw, 1.75rem);
+  color:rgba(240,230,206,0.2); letter-spacing:0.02em;
+}
+.mq-diamond {
+  width:5px; height:5px; background:rgba(176,130,44,0.35);
+  transform:rotate(45deg); flex-shrink:0;
+}
+
+/* ══════════════════════════════════════════════
+   GALLERY STRIP
+══════════════════════════════════════════════ */
+#gallery { background:var(--ink); padding:110px 0; overflow:hidden; }
+.gallery-head { text-align:center; padding:0 64px; margin-bottom:60px; }
+.gallery-head h2 {
+  font-family:var(--display);
+  font-size:clamp(2.1rem,3.8vw,3.5rem);
+  font-weight:300; color:var(--cream); margin:18px 0 12px;
+  letter-spacing:0.01em;
+}
+.gallery-head h2 em { font-style:italic; font-weight:600; color:var(--amber); }
+.gallery-head p { font-family:var(--display); font-style:italic; font-size:1.1rem; color:rgba(240,230,206,0.32); }
+
+#gallery { background:var(--ink); padding:110px 0; overflow:hidden; }
+.gallery-head { text-align:center; padding:0 64px; margin-bottom:60px; }
+.gallery-head h2 {
+  font-family:var(--display);
+  font-size:clamp(2.1rem,3.8vw,3.5rem);
+  font-weight:300; color:var(--cream); margin:18px 0 12px;
+  letter-spacing:0.01em;
+}
+.gallery-head h2 em { font-style:italic; font-weight:600; color:var(--amber); }
+.gallery-head p { font-family:var(--display); font-style:italic; font-size:1.1rem; color:rgba(240,230,206,0.32); }
+
+/* ── Auto-scrolling strip (landscape photos) ── */
+.strip-wrap { overflow:hidden; }
+.strip {
+  display:flex; gap:0; width:max-content;
+  animation:marquee 42s linear infinite;
+}
+.strip:hover { animation-play-state:paused; }
+@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+.s-card {
+  /* natural aspect ratio — no forced height that crops */
+  width: 420px;
+  flex-shrink: 0;
+  position: relative; overflow: hidden; cursor: pointer;
+  background: var(--wine);
+}
+/* maintain 4:3 aspect ratio so full image shows */
+.s-card::before {
+  content: ''; display: block; padding-top: 75%;
+}
+.s-card img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  transition: transform 0.7s var(--ease); display: block;
+}
+.s-card:hover img { transform: scale(1.06); }
+
+/* ══════════════════════════════════════════════
+   PHOTO GRID
+══════════════════════════════════════════════ */
+.pg-row3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+}
+.pg-row4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3px;
+  margin-top: 3px;
+}
+.pg-item {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--wine);
+}
+/* Natural 4:3 ratio — full image always visible */
+.pg-item::before {
+  content: ''; display: block; padding-top: 75%;
+}
+.pg-item img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  transition: transform 0.7s var(--ease);
+  display: block;
+}
+.pg-item:hover img { transform: scale(1.04); }
+
+/* caption overlay on hover */
+.pg-cap {
+  position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(transparent 45%, rgba(15,7,9,0.88));
+  display: flex; flex-direction: column;
+  justify-content: flex-end; padding: 20px;
+  opacity: 0; transform: translateY(6px);
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+}
+.pg-item:hover .pg-cap { opacity: 1; transform: none; }
+.pg-lbl {
+  font-size: 0.56rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--amber); margin-bottom: 4px;
+}
+.pg-name {
+  font-family: var(--display); font-style: italic;
+  font-size: 1rem; color: var(--cream);
+}
+
+/* gold shimmer border on hover */
+.pg-item::after {
+  content: ''; position: absolute; inset: 0;
+  border: 1px solid rgba(176,130,44,0);
+  transition: border-color 0.4s; pointer-events: none; z-index: 2;
+}
+.pg-item:hover::after { border-color: rgba(176,130,44,0.5); }
+
+@media (max-width: 768px) {
+  .pg-row3 { grid-template-columns: 1fr 1fr; }
+  .pg-row4 { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 480px) {
+  .pg-row3, .pg-row4 { grid-template-columns: 1fr; }
+}
+
+/* ══════════════════════════════════════════════
+   INSTAGRAM REEL SECTION
+══════════════════════════════════════════════ */
+#reel {
+  background: var(--deep);
+  padding: 110px 64px;
+}
+.reel-wrap {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 80px; align-items: center;
+}
+/* .reel-left { } */
+.reel-h2 {
+  font-family: var(--display);
+  font-size: clamp(2rem, 3.8vw, 3.4rem);
+  font-weight: 300; color: var(--cream);
+  line-height: 1.1; margin: 18px 0 22px;
+}
+.reel-h2 em { font-style: italic; font-weight: 600; color: var(--amber); }
+.reel-p {
+  font-size: 0.92rem; line-height: 1.9;
+  color: rgba(240,230,206,0.5); margin-bottom: 32px;
+}
+.reel-ig-link {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--body); font-size: 0.66rem;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--amber);
+  border-bottom: 1px solid rgba(206,162,74,0.35);
+  padding-bottom: 2px;
+  transition: color 0.25s, border-color 0.25s;
+}
+.reel-ig-link:hover { color: var(--cream); border-color: rgba(240,230,206,0.5); }
+.reel-ig-link svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:1.8; }
+
+.reel-right {
+  position: relative;
+  display: flex; justify-content: center;
+}
+.reel-phone-frame {
+  position: relative;
+  width: 300px;
+  background: #0a0407;
+  border-radius: 36px;
+  padding: 10px;
+  box-shadow:
+    0 0 0 1px rgba(176,130,44,0.25),
+    0 32px 80px rgba(0,0,0,0.6),
+    inset 0 0 0 1px rgba(255,255,255,0.04);
+}
+.reel-phone-frame::before {
+  content: ''; position: absolute; top: 12px; left: 50%;
+  transform: translateX(-50%);
+  width: 60px; height: 4px; border-radius: 2px;
+  background: rgba(255,255,255,0.12); z-index: 2;
+}
+.reel-video-box {
+  border-radius: 28px;
+  overflow: hidden;
+  position: relative;
+  aspect-ratio: 9/16;
+  background: #1a0c12;
+}
+.reel-video-box iframe {
+  width: 100%; height: 100%;
+  border: none; display: block;
+  border-radius: 28px;
+}
+/* glow ring behind phone */
+.reel-glow {
+  position: absolute; inset: -20px;
+  border-radius: 50px;
+  background: radial-gradient(ellipse at center, rgba(206,162,74,0.1) 0%, transparent 70%);
+  pointer-events: none; z-index: -1;
+}
+
+@media (max-width: 1024px) {
+  .reel-wrap { grid-template-columns: 1fr; gap: 56px; }
+  .reel-right { order: -1; }
+  .reel-phone-frame { width: 260px; }
+}
+@media (max-width: 640px) {
+  #reel { padding: 80px 22px; }
+  .reel-phone-frame { width: 220px; }
+}
+.s-card:hover img { transform:scale(1.06); }
+.s-overlay {
+  position:absolute; inset:0; z-index:1;
+  background:linear-gradient(transparent 40%, rgba(15,7,9,0.88));
+  display:flex; align-items:flex-end; padding:22px;
+  opacity:0; transform:translateY(5px);
+  transition:opacity 0.4s var(--ease), transform 0.4s var(--ease);
+}
+.s-card:hover .s-overlay { opacity:1; transform:none; }
+.s-lbl { font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--amber); margin-bottom:4px; }
+.s-name { font-family:var(--display); font-style:italic; font-size:1.05rem; color:var(--cream); }
+
+.strip-note { text-align:center; margin-top:30px; font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(240,230,206,0.14); }
+
+/* ══════════════════════════════════════════════
+   MENU
+══════════════════════════════════════════════ */
+#menu { background:var(--ivory); padding:130px 64px; }
+.menu-wrap { max-width:1100px; margin:0 auto; }
+.menu-head { text-align:center; margin-bottom:64px; }
+.menu-head h2 {
+  font-family:var(--display);
+  font-size:clamp(2.1rem,3.8vw,3.5rem);
+  font-weight:300; color:var(--deep); margin:18px 0 12px;
+}
+.menu-head h2 em { font-style:italic; font-weight:600; color:var(--plum); }
+.menu-head p { font-family:var(--display); font-style:italic; color:var(--muted); font-size:1.05rem; }
+
+.tabs { display:flex; justify-content:center; gap:5px; flex-wrap:wrap; margin-bottom:52px; }
+.tab {
+  padding:11px 30px;
+  border:1px solid rgba(98,32,56,0.3);
+  background:transparent; color:var(--plum);
+  font-family:var(--body); font-size:0.68rem;
+  letter-spacing:0.18em; text-transform:uppercase;
+  cursor:pointer; position:relative; overflow:hidden;
+  transition:color 0.28s, border-color 0.28s, background 0.28s;
+}
+.tab:hover {
+  color: var(--cream);
+  background: var(--plum);
+  border-color: var(--plum);
+}
+.tab.on {
+  color: var(--cream);
+  background: var(--wine);
+  border-color: var(--wine);
+}
+
+.mpanel { display:none; }
+.mpanel.on { display:grid; grid-template-columns:repeat(auto-fill,minmax(256px,1fr)); gap:2px; }
+
+.mcard {
+  background:white; padding:34px 26px;
+  position:relative; overflow:hidden;
+  transition:transform 0.3s var(--ease), box-shadow 0.3s;
+}
+.mcard::before {
+  content:''; position:absolute; top:0; left:0;
+  height:2px; width:0;
+  background:linear-gradient(90deg, var(--wine), var(--amber));
+  transition:width 0.5s var(--ease);
+}
+.mcard:hover::before { width:100%; }
+.mcard:hover { transform:translateY(-5px); box-shadow:0 18px 44px rgba(15,7,9,0.1); }
+.mcard h4 { font-family:var(--serif); font-size:1.08rem; font-weight:700; color:var(--deep); margin-bottom:10px; }
+.mcard p  { font-size:0.8rem; color:var(--muted); line-height:1.78; }
+.mcard-tag {
+  display:block; margin-top:20px; padding-top:14px;
+  border-top:1px solid rgba(176,130,44,0.16);
+  font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold);
+}
+.mcard.special { background:var(--deep); }
+.mcard.special h4 { color:var(--amber); }
+.mcard.special p  { color:rgba(240,230,206,0.45); }
+.mcard.special .mcard-tag { color:rgba(176,130,44,0.5); border-color:rgba(176,130,44,0.16); }
+
+/* ══════════════════════════════════════════════
+   CTA BANNER
+══════════════════════════════════════════════ */
+#cta {
+  background: var(--wine); padding: 100px 64px;
+  text-align: center; position: relative; overflow: hidden;
+}
+#cta::before {
+  content:''; position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  width:700px; height:700px; border-radius:50%;
+  background:rgba(15,7,9,0.2); pointer-events:none;
+}
+.cta-h2 {
+  font-family:var(--display);
+  font-size:clamp(1.9rem,3.5vw,3.2rem);
+  font-weight:300; color:var(--cream);
+  max-width:640px; margin:18px auto 40px; line-height:1.18;
+}
+.cta-h2 em { font-style:italic; font-weight:600; color:var(--amber); }
+.cta-btns { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+
+/* ══════════════════════════════════════════════
+   INFO / VISIT
+══════════════════════════════════════════════ */
+#info { background:var(--ink); padding:130px 64px; }
+.info-wrap {
+  max-width:1100px; margin:0 auto;
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:80px; align-items:start;
+}
+.info-h2 {
+  font-family:var(--display);
+  font-size:clamp(2.1rem,3.8vw,3.5rem);
+  font-weight:300; color:var(--cream); margin:18px 0 44px;
+}
+.info-h2 em { font-style:italic; font-weight:600; }
+
+.irows { display:flex; flex-direction:column; gap:28px; }
+.irow { display:flex; gap:20px; align-items:flex-start; }
+.irow-ico {
+  width:44px; height:44px; flex-shrink:0;
+  border:1px solid rgba(176,130,44,0.2);
+  display:flex; align-items:center; justify-content:center;
+  transition:background 0.25s, border-color 0.25s;
+}
+.irow:hover .irow-ico { background:rgba(176,130,44,0.08); border-color:rgba(176,130,44,0.45); }
+.irow-ico svg { width:16px; height:16px; stroke:var(--amber); fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
+.irow-lbl { font-size:0.58rem; letter-spacing:0.24em; text-transform:uppercase; color:var(--amber); margin-bottom:5px; }
+.irow-val { font-size:0.88rem; color:rgba(240,230,206,0.55); line-height:1.78; }
+.irow-val a { color:rgba(240,230,206,0.55); transition:color 0.2s; }
+.irow-val a:hover { color:var(--amber); }
+
+.map-card { border:1px solid rgba(176,130,44,0.14); overflow:hidden; }
+.map-card iframe { width:100%; height:330px; border:none; display:block; filter:grayscale(30%) brightness(0.85); }
+.map-foot {
+  padding:20px 22px; display:flex; justify-content:space-between; align-items:center;
+  background:rgba(255,255,255,0.02);
+  border-top:1px solid rgba(176,130,44,0.1);
+}
+.map-foot p { font-family:var(--display); font-style:italic; font-size:0.82rem; color:rgba(240,230,206,0.25); }
+.map-foot a {
+  font-size:0.62rem; letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--amber); border-bottom:1px solid rgba(176,130,44,0.3); padding-bottom:1px;
+  transition:color 0.2s;
+}
+.map-foot a:hover { color:var(--cream); }
+
+/* ══════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════ */
+footer {
+  background:#0a0407;
+  border-top:1px solid rgba(176,130,44,0.1);
+  padding:40px 64px;
+  display:grid; grid-template-columns:1fr auto 1fr;
+  align-items:center; gap:24px;
+}
+.f-logo { font-family:var(--display); font-size:1.2rem; font-weight:600; font-style:italic; color:rgba(240,230,206,0.3); }
+.f-logo span { color:var(--amber); }
+.f-copy { font-size:0.66rem; color:rgba(240,230,206,0.17); text-align:center; letter-spacing:0.06em; line-height:1.9; }
+.f-social { text-align:right; }
+.f-social a { font-size:0.62rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(240,230,206,0.25); transition:color 0.2s; }
+.f-social a:hover { color:var(--amber); }
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════ */
+@media (max-width:1024px) {
+  #nav { padding:0 28px; }
+  .nav-center { display:none; }
+  .about-wrap, .info-wrap { grid-template-columns:1fr; gap:56px; }
+  .band-grid { grid-template-columns:1fr 1fr; gap:40px; }
+  .band-item { border-right:none; padding:0; }
+}
+@media (max-width:640px) {
+  #nav { padding:0 20px; height:60px; }
+  .nav-phone { display:none; }
+  #band,#about,#menu,#info,#cta { padding-left:22px; padding-right:22px; padding-top:80px; padding-bottom:80px; }
+  #gallery { padding:80px 0; }
+  .hero-bar { display:none; }
+  .feats { grid-template-columns:1fr; }
+  footer { grid-template-columns:1fr; text-align:center; }
+  .f-social { text-align:center; }
+  .s-card { width:280px; }
+}
+
+/* ===== Premium Mobile Improvements ===== */
+.pg-row3,
+.pg-row4{
+  max-width:1400px;
+  margin-left:auto;
+  margin-right:auto;
+  padding:0 24px;
+}
+
+@media (max-width:768px){
+  .pg-row3,.pg-row4{padding:0 16px;}
+}
+
+@media (max-width:640px){
+  .hero-inner{padding:0 20px;}
+  .hero-h1{font-size:clamp(2.6rem,12vw,4rem);line-height:.95;}
+  .hero-sub{font-size:.95rem;line-height:1.8;max-width:320px;margin:auto;}
+  .hero-btns{flex-direction:column;width:100%;gap:12px;}
+  .hero-btns a{width:100%;text-align:center;}
+
+  section{overflow:hidden;}
+
+  #about,#menu,#reel,#info,#cta{
+    padding-top:70px;
+    padding-bottom:70px;
+  }
+
+  .gallery-head,.menu-head{
+    padding:0 20px;
+  }
+}
+
+@media (max-width:550px){
+  .pg-row3,.pg-row4{
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+
+  .pg-item{
+    border-radius:16px;
+    overflow:hidden;
+  }
+
+  .pg-item::before{
+    padding-top:68%;
+  }
+}
+
+@media (max-width:320px){
+  html{font-size:14px;}
+  #nav{padding:0 12px;}
+  .nav-btn{padding:8px 12px;font-size:.55rem;}
+  .hero-inner{padding:0 12px;}
+
+  .btn-a,.btn-b{
+    padding:14px 18px;
+    width:100%;
+    text-align:center;
+  }
+
+  .reel-phone-frame{
+    width:180px;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ═══════ NAV ═══════ -->
+<nav id="nav">
+  <a href="#" class="nav-logo"><span>Ètani</span> Cafè</a>
+  <ul class="nav-center">
+    <li><a href="#about">About</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#info">Visit</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-phone">Call &nbsp;<strong>98057 62337</strong></div>
+    <a href="#info" class="nav-btn">Visit Us</a>
+  </div>
+</nav>
+
+<!-- ═══════ HERO ═══════ -->
+<section id="hero">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-grain"></div>
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+
+  <div class="hero-inner">
+    <div class="lbl lbl-gold lbl-c hero-lbl">Right in front of IIIT Una &nbsp;·&nbsp; Saloh, HP</div>
+
+    <h1 class="hero-h1">
+      Good Vibes,
+      <span class="cursive">Great Coffee</span>
+      <span class="sub-line">Budget-Friendly Bites.</span>
+    </h1>
+
+    <div class="hero-rule">
+      <div class="hero-rule-line"></div>
+      <div class="hero-rule-diamond"></div>
+      <div class="hero-rule-line"></div>
+    </div>
+
+    <p class="hero-sub">
+      Your favourite campus community spot — a space to chill, study, or celebrate.
+    </p>
+
+    <div class="hero-btns">
+      <a href="#menu" class="btn-a">Explore Menu</a>
+      <a href="#info" class="btn-b">Get Directions</a>
+    </div>
+  </div>
+<div class="hero-bar">
+    <div class="hb-stat"><div class="hb-num">4.9&#9733;</div><div class="hb-lbl">Google Rating</div></div>
+    <div class="hb-div"></div>
+    <div class="hb-stat"><div class="hb-num">11–9</div><div class="hb-lbl">Open Daily</div></div>
+    <div class="hb-div"></div>
+    <div class="hb-stat"><div class="hb-num">&#8377;400+</div><div class="hb-lbl">Avg for Two</div></div>
+  </div>
+</section>
+
+<!-- ═══════ PILLARS BAND ═══════ -->
+<section id="band">
+  <div class="band-grid">
+    <div class="band-item" data-r="y">
+      <div class="band-ico"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div>
+      <h4>Specialty Coffee</h4>
+      <p>From espresso to our signature rose cappuccino — brewed with premium beans.</p>
+    </div>
+    <div class="band-item" data-r="y" data-d="1">
+      <div class="band-ico"><svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg></div>
+      <h4>Fresh In A Can</h4>
+      <p>Instantly sealed signature drinks — every bubble and berry stays just right.</p>
+    </div>
+    <div class="band-item" data-r="y" data-d="2">
+      <div class="band-ico"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+      <h4>Free Wi-Fi + Power</h4>
+      <p>High-speed internet and charging outlets for every student.</p>
+    </div>
+    <div class="band-item" data-r="y" data-d="3">
+      <div class="band-ico"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+      <h4>Welcoming for All</h4>
+      <p>Women-owned, pet-friendly, and wheelchair-accessible.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ INSTAGRAM REEL ═══════ -->
+<section id="reel">
+  <div class="reel-wrap">
+    <div class="reel-left">
+      <div class="lbl lbl-gold" data-r="y">As Seen On Instagram</div>
+      <h2 class="reel-h2" data-r="y" data-d="1">
+        The vibe you need<br>to <em>see for yourself.</em>
+      </h2>
+      <p class="reel-p" data-r="y" data-d="2">
+        From that first sip of rose cappuccino to the warm glow of our arched interiors — Ètani Cafè is a feeling best experienced in person. Until then, here is a little taste.
+      </p>
+      <a class="reel-ig-link" href="https://www.instagram.com/etani.cafe" target="_blank" data-r="y" data-d="3">
+        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        Follow @etani.cafe
+      </a>
+    </div>
+
+    <div class="reel-right" data-r="r" data-d="1">
+      <div class="reel-glow"></div>
+      <div class="reel-phone-frame">
+        <div class="reel-video-box">
+          <iframe
+            src="https://www.instagram.com/reel/DRczZDdEyzs/embed/captioned/"
+            allowfullscreen
+            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+            scrolling="no"
+            loading="lazy">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ ABOUT ═══════ -->
+<section id="about">
+  <div class="about-wrap">
+    <div>
+      <div class="lbl lbl-dark" data-r="y">Who We Are</div>
+      <h2 class="about-h2" data-r="y" data-d="1">More than a café —<br><em>it is a feeling.</em></h2>
+      <p class="about-p" data-r="y" data-d="2">Ètani Cafè is a women-owned, student-favourite hangout nestled right in front of IIIT Una. We brew specialty coffee, bake fresh pastries, and serve comforting meals without burning a hole in your pocket.</p>
+      <p class="about-p" data-r="y" data-d="3">Whether you need a quiet corner to focus, a cozy nook to catch up with friends, or just a really good cup of coffee after a long lecture — we have always got you.</p>
+      <div data-r="y" data-d="4" style="margin-top:38px;">
+        <a href="#menu" class="btn-a" style="background:var(--wine);color:var(--cream);">Explore Menu</a>
+      </div>
+    </div>
+
+    <div class="feats">
+      <div class="feat" data-r="s"><div class="feat-ico"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><h4>Free Wi-Fi + Charging</h4><p>High-speed internet and outlets for late-night sessions.</p></div>
+      <div class="feat" data-r="s" data-d="1"><div class="feat-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 018 0v2"/></svg></div><h4>Women-Owned</h4><p>Proudly women-led — an inclusive space for everyone.</p></div>
+      <div class="feat" data-r="s" data-d="2"><div class="feat-ico"><svg viewBox="0 0 24 24"><path d="M10 2v4M14 2v4M4 8h16M4 8a2 2 0 00-2 2v9a2 2 0 002 2h16a2 2 0 002-2v-9a2 2 0 00-2-2"/></svg></div><h4>Pet-Friendly</h4><p>Dogs welcome inside our indoor premises.</p></div>
+      <div class="feat" data-r="s" data-d="3"><div class="feat-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="16 12 12 8 8 12"/><line x1="12" y1="16" x2="12" y2="8"/></svg></div><h4>Accessible</h4><p>Wheelchair-accessible entrance and seating.</p></div>
+      <div class="feat" data-r="s" data-d="4"><div class="feat-ico"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div><h4>Pure Vegetarian</h4><p>100% veg menu with clearly marked vegan choices.</p></div>
+      <div class="feat" data-r="s" data-d="5"><div class="feat-ico"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><h4>Indoor + Outdoor</h4><p>Cozy arched lounge and a fresh open-air terrace.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ MARQUEE ═══════ -->
+<section id="marquee">
+  <div class="mq-track">
+    <div class="mq-item"><span class="mq-text">Good Coffee. Good Vibes.</span><div class="mq-diamond"></div></div>
+    <div class="mq-item"><span class="mq-text">Right In Front of IIIT Una</span><div class="mq-diamond"></div></div>
+    <div class="mq-item"><span class="mq-text">Pure Vegetarian · Vegan Friendly</span><div class="mq-diamond"></div></div>
+    <div class="mq-item"><span class="mq-text">Open Daily · 11 AM to 9 PM</span><div class="mq-diamond"></div></div>
+    <div class="mq-item"><span class="mq-text">Women-Owned · Pet-Friendly</span><div class="mq-diamond"></div></div>
+    <div class="mq-item"><span class="mq-text">Good Coffee. Good Vibes.</span><div class="mq-diamond"></div></div>
+    <div class="mq-item"><span class="mq-text">Right In Front of IIIT Una</span><div class="mq-diamond"></div></div>
+    <div class="mq-item"><span class="mq-text">Pure Vegetarian · Vegan Friendly</span><div class="mq-diamond"></div></div>
+    <div class="mq-item"><span class="mq-text">Open Daily · 11 AM to 9 PM</span><div class="mq-diamond"></div></div>
+    <div class="mq-item"><span class="mq-text">Women-Owned · Pet-Friendly</span><div class="mq-diamond"></div></div>
+  </div>
+</section>
+
+<!-- ═══════ GALLERY ═══════ -->
+<section id="gallery">
+  <div class="gallery-head">
+    <div class="lbl lbl-gold lbl-c" data-r="y">Inside Ètani</div>
+    <h2 data-r="y" data-d="1">A peek into <em>the vibe</em></h2>
+    <p data-r="y" data-d="2">Warm lights, arched walls, and a corner that feels like yours.</p>
+  </div>
+
+  <!-- Row 1: 3 equal columns — big showcase -->
+  <div class="pg-row3" data-r="y">
+    <div class="pg-item">
+      <img src="https://lh3.googleusercontent.com/gps-cs-s/APNQkAGowW8xLXqVELEIBO7Uux99nh1RASPHW3SuLeetB0-wr25gCCvXx-wVpA3NXFP45To6ZK8AmIqm9i0b5Ann_rs-afZPw1eNXLhaNVKgNodfNt7bOw84-HrieGKejn5g6_sEpcsGzBhW1iU=s1360-w1360-h1020-rw" alt="Ètani Cafè Exterior" loading="lazy">
+      <div class="pg-cap"><div class="pg-lbl">Exterior</div><div class="pg-name">Ètani Cafè, IIIT Una</div></div>
+    </div>
+    <div class="pg-item">
+      <img src="https://lh3.googleusercontent.com/gps-cs-s/APNQkAFtWaiKsPM143iQpRTajJnB13in1xVDshwJFJgr-KxieWZoPClJo1U63Z3M_gh4HQIVV8Dghfq8E3DFblOF_bj_IaWuRU8XYzIhrVP97gMpXAQp1eB0OYfNK3388lKPH7BhYGk7ix_j1sCG=s1360-w1360-h1020-rw" alt="Interior" loading="lazy">
+      <div class="pg-cap"><div class="pg-lbl">Interior</div><div class="pg-name">The arched dining room</div></div>
+    </div>
+    <div class="pg-item">
+      <img src="https://lh3.googleusercontent.com/gps-cs-s/APNQkAFXegCMcUywS_vQK1TR_lE1Rcuan8Qla8VIJtX51cZeM_MgShc1XOfvrkED5qaUMr_LiPI-BLSopbQ7w19wf0vDd98UoALlQOfk0H243KjYkLmxAtG0A-gnskxAB33q6j8AFmq8p51IJ_dn=s1360-w1360-h1020-rw" alt="Food" loading="lazy">
+      <div class="pg-cap"><div class="pg-lbl">Food</div><div class="pg-name">Fresh bites at Ètani</div></div>
+    </div>
+  </div>
+
+  <!-- Row 2: 4 equal columns -->
+  <div class="pg-row4" data-r="y" data-d="1">
+    <div class="pg-item">
+      <img src="https://lh3.googleusercontent.com/gps-cs-s/APNQkAHlE8xWVxGBhxLmhNGjV2AJApU5Xmm2eOmXSqza-xEWrUikLWZbO_xl7KN7lMy92nl8dscdgs1XtABMMHp3NxtRQ8HPZENCA563gbFf2D3gi8DtDz4eSr_pMz-cUVDGhxHDJJE8jKkmcgU=s1360-w1360-h1020-rw" alt="Coffee" loading="lazy">
+      <div class="pg-cap"><div class="pg-lbl">Coffee</div><div class="pg-name">Specialty brews</div></div>
+    </div>
+    <div class="pg-item">
+      <img src="https://lh3.googleusercontent.com/gps-cs-s/APNQkAG-TDiVokl27nASPSEoT7-7F6vwE6rAiEjBxNh9WXUuwawmhlDdY1Eo81WHgwzaSLSAl6UqMdn1LfX6tT5ubzsQ60SL_t2ueQ33SeYZMHj9TFvBbtkykbL_ZdfnpTjo7qFtzc7j-e5OGl0=s1360-w1360-h1020-rw" alt="Interior 2" loading="lazy">
+      <div class="pg-cap"><div class="pg-lbl">Ambience</div><div class="pg-name">Warm interiors</div></div>
+    </div>
+    <div class="pg-item">
+      <img src="https://lh3.googleusercontent.com/gps-cs-s/APNQkAFak-2q_6PJYx_8Dbj_AW7RGpUsXM1jJPIOeKURBSzrkylkossx7VX-9vlNyI02y-6zErI7w0QjYPTNv_AwIFP1RObFw3mc80wINmcLq0bp8VGl5-lTOqdxzwub8ukDoN97DBV-fCQ0rNk=s1360-w1360-h1020-rw" alt="Interior 3" loading="lazy">
+      <div class="pg-cap"><div class="pg-lbl">Seating</div><div class="pg-name">Cozy indoor corners</div></div>
+    </div>
+    <div class="pg-item">
+      <img src="https://lh3.googleusercontent.com/gps-cs-s/APNQkAFoTsZg1ZiJdJVcoAnnozURhW651-c6fDxMl9pr_W9gslNbv-kauRcVORnsyR611iP3-otFzKwPEEqq37QCY1yqIblwmMzFgjzEQWcwL7uq_j2XY6iOc_t_lTf_ZyDfoVaxIR0Pmp-AsZOa=s1360-w1360-h1020-rw" alt="Interior 4" loading="lazy">
+      <div class="pg-cap"><div class="pg-lbl">Vibes</div><div class="pg-name"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ MENU ═══════ -->
+<section id="menu">
+  <div class="menu-wrap">
+    <div class="menu-head">
+      <div class="lbl lbl-dark lbl-c" data-r="y">What We Serve</div>
+      <h2 data-r="y" data-d="1">The <em>Menu</em></h2>
+      <p data-r="y" data-d="2">Pure vegetarian · Vegan-friendly options available</p>
+    </div>
+    <div class="tabs" data-r="y">
+      <button class="tab on"  onclick="switchTab(this,'coffee')">Hot Brews</button>
+      <button class="tab"     onclick="switchTab(this,'cold')">Iced + Chilled</button>
+      <button class="tab"     onclick="switchTab(this,'cans')">Fresh In A Can</button>
+      <button class="tab"     onclick="switchTab(this,'bites')">Bites + Meals</button>
+      <button class="tab"     onclick="switchTab(this,'sweets')">Sweet Treats</button>
+    </div>
+
+    <div id="t-coffee" class="mpanel on">
+      <div class="mcard"><h4>Espresso / Americano</h4><p>Freshly ground premium beans, brewed to a bold, clean finish. The classic start to any campus day.</p><span class="mcard-tag">Hot · Classic</span></div>
+      <div class="mcard"><h4>Creamy Cappuccino</h4><p>Rich espresso balanced with a velvety, steamed froth layer. Simple, satisfying, perfect.</p><span class="mcard-tag">Hot · Bestseller</span></div>
+      <div class="mcard"><h4>Rose Cappuccino</h4><p>Our signature floral-infused espresso — subtle, romantic, unforgettable. A must-try at Ètani.</p><span class="mcard-tag">Hot · Signature</span></div>
+      <div class="mcard"><h4>Affogato</h4><p>A hot espresso shot poured over creamy vanilla ice cream. Two worlds colliding beautifully.</p><span class="mcard-tag">Hot · Dessert Coffee</span></div>
+    </div>
+
+    <div id="t-cold" class="mpanel">
+      <div class="mcard"><h4>Iced Latte</h4><p>Smooth, refreshing espresso over ice with cold milk. The campus staple that never gets old.</p><span class="mcard-tag">Iced · Light</span></div>
+      <div class="mcard"><h4>Iced Hazelnut Latte</h4><p>Premium nutty cold brew — sweet, rich, and deeply satisfying after a long lecture.</p><span class="mcard-tag">Iced · Nutty</span></div>
+      <div class="mcard"><h4>Hibiscus Iced Tea</h4><p>Floral, tart, and perfectly chilled. Great for warm Himachal afternoons.</p><span class="mcard-tag">Iced · Caffeine-free</span></div>
+    </div>
+
+    <div id="t-cans" class="mpanel">
+      <div class="mcard special" style="grid-column:1/-1;max-width:540px;margin:0 auto 2px;">
+        <p style="font-family:var(--display);font-style:italic;font-size:0.9rem;color:rgba(240,230,206,0.32);margin-bottom:9px;">Every bubble, berry, and mint leaf stays just right!</p>
+        <h4>Fresh In A Can&#8482;</h4>
+        <p>Instantly sealed on order — freshness locked in every single sip.</p>
+      </div>
+      <div class="mcard"><h4>Blueberry Lemonade</h4><p>Tangy, juicy, and fizzy with real blueberry notes. Incredibly refreshing on any day.</p><span class="mcard-tag">Signature · Fizzy</span></div>
+      <div class="mcard"><h4>Mint Mojito</h4><p>Crisp, cooling, and classic. The perfect study-break companion all year round.</p><span class="mcard-tag">Signature · Refreshing</span></div>
+      <div class="mcard"><h4>Boba Tea</h4><p>Authentic bubble tea with chewy tapioca pearls and bold tea flavour.</p><span class="mcard-tag">Signature · Boba</span></div>
+    </div>
+
+    <div id="t-bites" class="mpanel">
+      <div class="mcard"><h4>Wood-Fired Pizza</h4><p>Fresh hand-tossed dough, gooey cheese, and loaded veggie toppings. Comfort in every bite.</p><span class="mcard-tag">Mains · Wood-fired</span></div>
+      <div class="mcard"><h4>Fresh Sandwiches</h4><p>Grilled to golden perfection with seasonal fillings and house-made sauces.</p><span class="mcard-tag">Bites · Grilled</span></div>
+      <div class="mcard"><h4>Continental Pasta</h4><p>Available in White, Red, or Mix sauce — creamy, comforting, campus-loved since day one.</p><span class="mcard-tag">Mains · 3 Sauces</span></div>
+      <div class="mcard"><h4>Noodles + Fries</h4><p>Quick, spicy, and dangerously snackable. The late-night study fuel you always needed.</p><span class="mcard-tag">Snacks · Spicy</span></div>
+    </div>
+
+    <div id="t-sweets" class="mpanel">
+      <div class="mcard"><h4>Flower Baklava</h4><p>Flaky, golden layers of pastry with honey and nut filling. A Mediterranean indulgence.</p><span class="mcard-tag">Dessert · Mediterranean</span></div>
+      <div class="mcard"><h4>Hot Chocolate Brownie</h4><p>Served sizzled on cast iron with vanilla ice cream. Pure bliss in every spoonful.</p><span class="mcard-tag">Dessert · Hot + Cold</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ CTA BANNER ═══════ -->
+<section id="cta">
+  <div class="lbl lbl-gold lbl-c" data-r="y">Come Visit Us</div>
+  <h2 class="cta-h2" data-r="y" data-d="1">
+    Your next favourite moment<br>is <em>just one cup away.</em>
+  </h2>
+  <div class="cta-btns" data-r="y" data-d="2">
+    <a href="#info" class="btn-a">Get Directions</a>
+    <a href="tel:+919805762337" class="btn-b">Call Us Now</a>
+  </div>
+</section>
+
+<!-- ═══════ INFO ═══════ -->
+<section id="info">
+  <div class="info-wrap">
+    <div>
+      <div class="lbl lbl-gold" data-r="y">Find Us</div>
+      <h2 class="info-h2" data-r="y" data-d="1">Come say <em>hello.</em></h2>
+      <div class="irows">
+        <div class="irow" data-r="y" data-d="1">
+          <div class="irow-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <div><div class="irow-lbl">Address</div><div class="irow-val">Near IIIT Una, Saloh, Bhadsali Har<br>Himachal Pradesh 174317</div></div>
+        </div>
+        <div class="irow" data-r="y" data-d="2">
+          <div class="irow-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div><div class="irow-lbl">Hours</div><div class="irow-val">Monday – Sunday · 11:00 AM – 9:00 PM</div></div>
+        </div>
+        <div class="irow" data-r="y" data-d="3">
+          <div class="irow-ico"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-5-5 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+          <div><div class="irow-lbl">Phone</div><div class="irow-val"><a href="tel:+919805762337">+91 98057 62337</a></div></div>
+        </div>
+        <div class="irow" data-r="y" data-d="4">
+          <div class="irow-ico"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+          <div><div class="irow-lbl">Average Cost for Two</div><div class="irow-val">&#8377;400 – &#8377;600</div></div>
+        </div>
+        <div class="irow" data-r="y" data-d="5">
+          <div class="irow-ico"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+          <div><div class="irow-lbl">Payment</div><div class="irow-val">UPI · Google Pay · PhonePe · Cash</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="map-card" data-r="r">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3401.0!2d76.2847!3d31.4817!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzHCsDI4JzU0LjEiTiA3NsKwMTcnMDUuMCJF!5e0!3m2!1sen!2sin!4v1718000000000"
+        allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <div class="map-foot">
+        <p>Directly in front of IIIT Una Campus Gate</p>
+        <a href="https://maps.google.com/?q=Etani+Cafe+Una+Himachal+Pradesh" target="_blank">Open in Maps</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer>
+  <div class="f-logo"><span>Ètani</span> Cafè</div>
+  <div class="f-copy">
+    Near IIIT Una, Saloh · Himachal Pradesh 174317<br>
+    &#169; 2025 Ètani Cafè · All rights reserved
+  </div>
+  <div class="f-social">
+    <a href="https://instagram.com/etani.cafe" target="_blank">@etani.cafe</a>
+  </div>
+</footer>
+
+<script>
+/* ── Navbar compact on scroll ── */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('compact', window.scrollY > 60);
+}, { passive: true });
+
+/* ── SCROLL REVEAL — forward only, no re-trigger ── */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in');
+      obs.unobserve(e.target); /* fire once — no animation on scroll back up */
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('[data-r]').forEach(el => obs.observe(el));
+
+/* ── Parallax hero bg — subtle ── */
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  if (y < window.innerHeight) {
+    document.getElementById('heroBg').style.transform = `translateY(${y * 0.22}px)`;
+  }
+}, { passive: true });
+
+/* ── Tab switching with card entry animation ── */
+function switchTab(btn, id) {
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.mpanel').forEach(p => p.classList.remove('on'));
+  btn.classList.add('on');
+  const panel = document.getElementById('t-' + id);
+  panel.classList.add('on');
+  panel.querySelectorAll('.mcard').forEach((c, i) => {
+    c.style.cssText = 'opacity:0;transform:translateY(14px)';
+    setTimeout(() => { c.style.cssText = 'transition:opacity 0.45s ease,transform 0.45s ease;opacity:1;transform:none'; }, i * 55);
+  });
+}
+</script>
+</body>
+</html>
